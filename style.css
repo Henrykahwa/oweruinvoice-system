@@ -1,0 +1,341 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #0a1f44;
+}
+
+h1, h2, h3 {
+  color: #0a1f44;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input, button {
+  margin: 8px 0;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #c28840;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #a06a2f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-section p {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.form-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Login Styling */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0a1f44;
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 350px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.login-box h1 {
+  font-size: 20px;
+  margin: 0;
+  color: #0a1f44;
+}
+
+.login-links {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.login-links a {
+  color: #c28840;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+/* Invoice History Styling */
+.invoice-list {
+  margin-top: 20px;
+}
+
+.invoice-item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.invoice-item h3 {
+  margin: 0 0 10px 0;
+  color: #0a1f44;
+}
+
+.invoice-item p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.invoice-item button {
+  margin-top: 10px;
+  width: auto;
+  padding: 8px 16px;
+}
+
+/* User Management Styles */
+.user-form {
+  display: flex;
+  align-items: center;
+}
+
+.user-form input, .user-form select {
+  width: 140px;
+  margin: 0 5px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.user-form button, .user-item button {
+  width: auto;
+  padding: 5px 10px;
+  font-size: 12px;
+  margin: 5px;
+}
+
+/* Invoice Number Range Styles */
+.range-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.range-form input {
+  width: 100px;
+  margin: 3px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.range-form button {
+  width: auto;
+  padding: 4px 8px;
+  font-size: 11px;
+  margin: 3px;
+}
+
+
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Petty Cash Dashboard Styles */
+.petty-cash-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  color: #0a1f44;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.sidebar h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #0a1f44;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.initial-cash-section, .summary-cards, .transaction-section {
+  margin-bottom: 30px;
+}
+
+.summary-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  flex: 1;
+  max-width: 200px;
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #0a1f44;
+}
+
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  color: #c28840;
+}
+
+.table-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.table-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  width: auto;
+}
+
+.export-options {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.export-options label {
+  font-size: 14px;
+  margin: 0;
+}
+
+.export-options input {
+  width: 120px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.export-options button {
+  padding: 6px 12px;
+  font-size: 14px;
+}

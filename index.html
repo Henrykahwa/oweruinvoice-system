@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oweru Invoice System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-container">
+    <div class="login-box">
+      <div class="logo-title">
+        <img src="oweru.jpeg" alt="Oweru Logo" class="logo-image" />
+        <h1>OWERU INVOICE SYSTEM</h1>
+      </div>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <div class="login-links">
+        <a href="#">Forgot password</a> |
+        <a href="#">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice Form -->
+  <div id="form-screen" style="display:none;" class="form-container">
+    <h2>Invoice Generator</h2>
+    <form id="invoice-form" onsubmit="generateReport(event)">
+      <div class="form-section">
+        <label>Invoice Number:</label><input type="text" name="invoice_number" required />
+        <label>TIN Number:</label><input type="text" name="tin" required />
+        <label>Invoice Date:</label><input type="date" name="date" required />
+        <label>Customer's Name:</label><input type="text" name="director" required />
+        <label>Phone Number:</label><input type="text" name="phone" required />
+        <label>Email:</label><input type="email" name="email" required />
+      </div>
+
+      <div class="form-section">
+        <h3>Items</h3>
+        <table id="item-table">
+          <tr>
+            <th>No</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th>
+          </tr>
+        </table>
+        <button type="button" onclick="addItem()">Add Item</button>
+      </div>
+
+      <div class="form-section">
+        <h3>Payment Method</h3>
+        <label><input type="checkbox" name="payment" value="Cash" /> Cash</label>
+        <label><input type="checkbox" name="payment" value="Bank Transfer" /> Bank Transfer</label>
+        <label><input type="checkbox" name="payment" value="Cheque" /> Cheque</label>
+      </div>
+
+      <div class="form-section">
+        <h3>Bank Details</h3>
+        <label>Bank Account:</label><input type="text" name="account" required />
+        <label>Holder Name:</label><input type="text" name="holder" required />
+        <label>Bank Name:</label><input type="text" name="bank" required />
+        <label>Branch:</label><input type="text" name="branch" required />
+      </div>
+
+      <div class="form-section">
+        <h3>Summary</h3>
+        <label>Subtotal:</label><input type="number" id="subtotal" name="subtotal" readonly />
+        <label id="vat-label">VAT & Tax (10%):</label><input type="number" id="vat" name="vat" readonly />
+        <label id="discount-label">Discount (TZS):</label><input type="number" id="discount" name="discount" readonly />
+        <label>Grand Total:</label><input type="number" id="total" name="total" readonly />
+      </div>
+
+      <div class="form-section">
+        <h3>Terms & Conditions</h3>
+        <p>All items are personalized, returns and refunds are not accepted. Unless the item is defective upon arrival, we will offer a refund or exchange. Thank you for your business!</p>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Generate Report</button>
+        <button type="button" onclick="openConfig()">Configuration</button>
+        <button type="button" onclick="openHistory()">Invoice History</button>
+        <button type="button" onclick="backToInvoiceReceiptDashboard()">Back to Dashboard</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Configuration Panel -->
+  <div id="config-screen" style="display:none;" class="form-container">
+    <h2>System Configuration</h2>
+    <div class="form-section">
+      <label>Change Secretary Password:</label><input type="password" id="new-password" />
+      <label>Default VAT (%):</label><input type="number" id="default-vat" value="10" />
+      <label>Default Discount (TZS):</label><input type="number" id="default-discount" value="0" />
+      <label>Customer's Name:</label><input type="text" id="default-director" />
+      <label>Company Logo URL:</label><input type="text" id="logo-url" value="oweru.jpeg" />
+      <label>Company Name:</label><input type="text" id="company-name" value="OWERU INTERNATIONAL LIMITED" />
+      <label>Company Address:</label><input type="text" id="company-address" value="Tancot House, Posta - Dar es salaam" />
+      <label>Company Phone:</label><input type="text" id="company-phone" value="+255 711890764" />
+      <label>Company Email:</label><input type="text" id="company-email" value="info@oweru.com" />
+      <label>Bank Account:</label><input type="text" id="default-account" />
+      <label>Bank Name:</label><input type="text" id="default-bank" />
+      <label>Branch:</label><input type="text" id="default-branch" />
+    </div>
+    <div class="form-actions">
+      <button onclick="saveConfig()">Save Configuration</button>
+      <button onclick="backToForm()">Back to Form</button>
+    </div>
+  </div>
+
+  <!-- Invoice History Screen -->
+  <div id="history-screen" style="display:none;" class="form-container">
+    <h2>Invoice History</h2>
+    <div id="invoice-list" class="invoice-list">
+      <!-- Invoices will be loaded here -->
+    </div>
+    <div class="form-actions">
+      <button onclick="backToInvoiceReceiptDashboard()">Back to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Dashboard Selection Screen -->
+  <div id="dashboard-screen" style="display:none;" class="form-container">
+    <h2>Select Dashboard</h2>
+    <div class="form-section">
+      <p>Choose the system you want to access:</p>
+      <div class="form-actions">
+        <button onclick="openMailManagement()">Mail Management System</button>
+        <button onclick="openExpensesIncome()">Expenses and Income Management System</button>
+        <button onclick="openInvoiceReceipt()">Invoice and Receipt Management System</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice and Receipt Dashboard Screen -->
+  <div id="invoice-receipt-dashboard" style="display:none;" class="form-container">
+    <h2>Invoice and Receipt Management System</h2>
+    <div class="form-section">
+      <p>Choose the type of document you want to create:</p>
+      <div class="form-actions">
+        <button onclick="openInvoiceForm()">Invoice Generation</button>
+        <button onclick="openReceiptForm()">Receipt Generation</button>
+        <button onclick="backToDashboard()">Back to Main Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expenses and Income Dashboard Screen -->
+  <div id="expenses-income-dashboard" style="display:none;" class="form-container">
+    <h2>Expenses and Income Management System</h2>
+    <div class="form-section">
+      <p>Choose an option:</p>
+      <div class="form-actions">
+        <button onclick="openExpenses()">Expenses</button>
+        <button onclick="openIncome()">Income</button>
+        <button onclick="backToDashboard()">Back to Main Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expenses Dashboard Screen -->
+  <div id="expenses-dashboard" style="display:none;" class="form-container">
+    <h2>Expenses Management</h2>
+    <div class="form-section">
+      <p>Choose an option:</p>
+      <div class="form-actions">
+        <button onclick="openPettyCash()">Petty Cash</button>
+        <button onclick="openPaymentVoucher()">Payment Voucher</button>
+        <button onclick="backToExpensesIncomeDashboard()">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Petty Cash Dashboard Screen -->
+  <div id="petty-cash-screen" style="display:none;" class="petty-cash-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3>PETTY CASH SYSTEM</h3>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+
+      <!-- Initial Cash Setting -->
+      <div class="initial-cash-section">
+        <h3>Set Initial Cash Amount</h3>
+        <div class="initial-cash-form">
+          <label>Initial Cash (TZS):</label>
+          <input type="number" id="initial-cash-input" step="0.01" placeholder="Enter initial cash amount" />
+          <button onclick="setInitialCash()">Set Initial Cash</button>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Cash</h3>
+          <p id="total-cash">0.00</p>
+        </div>
+        <div class="card">
+          <h3>Total Payments</h3>
+          <p id="total-payments">0.00</p>
+        </div>
+        <div class="card">
+          <h3>Available Balance</h3>
+          <p id="available-balance">0.00</p>
+        </div>
+      </div>
+
+      <!-- Transaction Table -->
+      <div class="transaction-section">
+        <h2>Petty Cash Transactions</h2>
+        <div class="table-actions">
+          <button onclick="addPettyCashTransaction()">Add Transaction</button>
+          <div class="export-options">
+            <label>Period:</label>
+            <select id="export-period">
+              <option value="">All</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+            <button onclick="exportPettyCash()">Export to Excel</button>
+          </div>
+          <button onclick="backToExpensesDashboard()">Back to Dashboard</button>
+        </div>
+        <table id="petty-cash-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="petty-cash-tbody">
+            <!-- Transactions will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add/Edit Transaction Modal -->
+      <div id="transaction-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeTransactionModal()">&times;</span>
+          <h3 id="modal-title">Add Transaction</h3>
+          <form id="transaction-form">
+            <label>Date:</label><input type="date" id="transaction-date" required />
+            <label>Description:</label><input type="text" id="transaction-description" required />
+            <label>Category:</label>
+            <select id="transaction-category" required>
+              <option value="Office Supplies">Office Supplies</option>
+              <option value="Taxi Fare">Taxi Fare</option>
+              <option value="Client Lunch">Client Lunch</option>
+              <option value="Other">Other</option>
+            </select>
+            <label>Amount:</label><input type="number" step="0.01" id="transaction-amount" required />
+            <button type="submit">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Form -->
+  <div id="receipt-screen" style="display:none;" class="form-container">
+    <h2>Receipt Generator</h2>
+    <form id="receipt-form" onsubmit="generateReceipt(event)">
+      <div class="form-section">
+        <label>Receipt Number:</label><input type="text" name="receipt_number" required />
+        <label>Customer Name:</label><input type="text" name="customer_name" required />
+        <label>Paid For:</label><input type="text" name="paid_for" />
+        <label>Phone:</label><input type="text" name="phone" />
+        <label>Email:</label><input type="email" name="email" />
+        <label>Amount Paid:</label><input type="number" step="0.01" name="amount" required />
+        <label>Receipt Date:</label><input type="date" name="receipt_date" required />
+      </div>
+
+      <div class="form-section">
+        <h3>Payment Method</h3>
+        <label><input type="radio" name="payment_method" value="Cash" checked /> Cash</label>
+        <label><input type="radio" name="payment_method" value="Bank Transfer" /> Bank Transfer</label>
+      </div>
+
+      <div class="form-section" id="bank-details-section" style="display:none;">
+        <h3>Bank Details</h3>
+        <label>Bank Name:</label><input type="text" name="bank_name" />
+        <label>Branch Name:</label><input type="text" name="branch_name" />
+        <label>Reference Number:</label><input type="text" name="reference_number" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Generate Report</button>
+        <button type="button" onclick="openReceiptHistory()">Receipt History</button>
+        <button type="button" onclick="backToInvoiceReceiptDashboard()">Back to Dashboard</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Receipt History Screen -->
+  <div id="receipt-history-screen" style="display:none;" class="form-container">
+    <h2>Receipt History</h2>
+    <div id="receipt-list" class="invoice-list">
+      <!-- Receipts will be loaded here -->
+    </div>
+    <div class="form-actions">
+      <button onclick="backToReceiptForm()">Back to Receipt Form</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Screen -->
+  <div id="admin-screen" style="display:none;" class="form-container">
+    <h2>Administrator Dashboard</h2>
+
+    <!-- User Management Section -->
+    <div class="form-section">
+      <h3>User Management</h3>
+      <div class="user-form">
+        <input type="text" id="new-username" placeholder="Username" />
+        <input type="password" id="new-password" placeholder="Password" />
+        <select id="new-role">
+          <option value="secretary">Secretary</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button onclick="addUser()">Add User</button>
+      </div>
+      <div id="user-list" class="user-list">
+        <!-- Users will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Invoice Number Range Section -->
+    <div class="form-section">
+      <h3>Invoice Number Range</h3>
+      <div class="range-form">
+        <label>Start Range:</label><input type="number" id="start-range" />
+        <label>End Range:</label><input type="number" id="end-range" />
+        <label>Current Number:</label><input type="number" id="current-number" />
+        <button onclick="setRange()">Set Range</button>
+        <button onclick="deleteRange()">Delete Range</button>
+      </div>
+      <div id="current-range-display"></div>
+    </div>
+
+    <!-- Range Logs Section -->
+    <div class="form-section">
+      <h3>Range Action Logs</h3>
+      <div id="range-logs-display" class="logs-list">
+        <!-- Logs will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Reports Section -->
+    <div class="form-section">
+      <h3>All Reports</h3>
+      <div class="form-actions">
+        <button onclick="showInvoiceReports()">View Invoice Reports</button>
+        <button onclick="showReceiptReports()">View Receipt Reports</button>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Reports Dashboard Screen -->
+  <div id="reports-screen" style="display:none;" class="form-container">
+    <h2>Reports Dashboard</h2>
+    <div id="reports-list" class="invoice-list">
+      <!-- Reports will be loaded here -->
+    </div>
+    <div class="form-actions">
+      <button onclick="backToAdmin()">Back to Admin Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Payment Voucher Dashboard Screen -->
+  <div id="payment-voucher-screen" style="display:none;" class="petty-cash-container">
+    <div class="sidebar">
+    </div>
+    <div class="main-content">
+      <h2>Payment Vouchers</h2>
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Vouchers</h3>
+          <p id="total-vouchers">0</p>
+        </div>
+        <div class="card">
+          <h3>Pending Approval</h3>
+          <p id="pending-approval">0</p>
+        </div>
+        <div class="card">
+          <h3>Approved Vouchers</h3>
+          <p id="approved-vouchers">0</p>
+        </div>
+      </div>
+      <div class="transaction-section">
+        <div class="table-actions">
+          <button onclick="openVoucherModal()">Add New Voucher</button>
+          <div class="export-options">
+            <label>Period:</label>
+            <select id="export-period">
+              <option value="">All</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+            <button onclick="exportPaymentVouchers()">Export to Excel</button>
+          </div>
+          <button onclick="backToExpensesDashboardFromVoucher()">Back to Dashboard</button>
+        </div>
+        <table id="voucher-table">
+          <thead>
+            <tr>
+              <th>Voucher Number</th>
+              <th>Date</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="voucher-table-body">
+            <!-- Vouchers will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Voucher Modal -->
+  <div id="voucher-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeVoucherModal()">&times;</span>
+      <h3 id="voucher-modal-title">Add New Voucher</h3>
+      <form id="voucher-form">
+        <label>Voucher Number:</label><input type="text" id="voucher-number" readonly />
+        <label>Date:</label><input type="date" id="voucher-date" required />
+        <label>Category:</label>
+        <select id="voucher-category" required>
+          <option value="">Select Category</option>
+          <option value="Office Supplies">Office Supplies</option>
+          <option value="Travel">Travel</option>
+          <option value="Meals">Meals</option>
+          <option value="Utilities">Utilities</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <label>Description:</label><textarea id="voucher-description" required></textarea>
+        <label>Amount:</label><input type="number" id="voucher-amount" step="0.01" required />
+        <button type="submit">Save Voucher</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div id="share-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeShareModal()">&times;</span>
+      <h3>Share Document</h3>
+      <p id="share-message"></p>
+      <button id="copy-link-btn">Copy Link</button>
+      <button id="email-share-btn">Share via Email</button>
+      <button onclick="shareViaWhatsApp()">Share via WhatsApp</button>
+      <button onclick="shareViaFacebook()">Share via Facebook</button>
+      <a id="download-pdf-btn" href="#" download style="display: block; margin-top: 10px; text-decoration: none; background-color: #c28840; color: white; padding: 10px; border-radius: 5px; text-align: center;">Download PDF</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
